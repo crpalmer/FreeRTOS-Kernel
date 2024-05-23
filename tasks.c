@@ -439,6 +439,8 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
  * below to enable the use of older kernel aware debuggers. */
 typedef tskTCB TCB_t;
 
+static const volatile UBaseType_t uxTaskNameOffset = offsetof(tskTCB, pcTaskName);
+
 #if ( configNUMBER_OF_CORES == 1 )
     /* MISRA Ref 8.4.1 [Declaration shall be visible] */
     /* More details at: https://github.com/FreeRTOS/FreeRTOS-Kernel/blob/main/MISRA.md#rule-84 */
@@ -3757,9 +3759,10 @@ void vTaskStartScheduler( void )
      * meaning xIdleTaskHandles are not used anywhere else. */
     ( void ) xIdleTaskHandles;
 
-    /* OpenOCD makes use of uxTopUsedPriority for thread debugging. Prevent uxTopUsedPriority
-     * from getting optimized out as it is no longer used by the kernel. */
+    /* OpenOCD makes use of uxTopUsedPriority and uxTaskNameOffset for thread debugging.
+     * Prevent these symbols * from getting optimized out as they aren't used by the kernel. */
     ( void ) uxTopUsedPriority;
+    ( void ) uxTaskNameOffset;
 
     traceRETURN_vTaskStartScheduler();
 }
